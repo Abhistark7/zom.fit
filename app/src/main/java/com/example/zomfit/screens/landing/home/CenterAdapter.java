@@ -11,21 +11,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ItemCardViewBinding;
-import com.example.zomfit.models.City;
+import com.example.zomfit.models.Center;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CitiesViewHolder> {
+public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CitiesViewHolder> {
 
-    private CityClickHandler clickHandler;
+    private CenterClickHandler clickHandler;
     private Context context;
-    private List<City> cities;
+    private List<Center> centerList;
 
-    public CitiesAdapter(Context context, CityClickHandler clickHandler) {
+    public CenterAdapter(Context context, CenterClickHandler clickHandler) {
         this.clickHandler = clickHandler;
         this.context = context;
-        cities = new ArrayList<>();
+        centerList = new ArrayList<>();
     }
 
     @NonNull
@@ -38,18 +38,18 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CitiesView
 
     @Override
     public void onBindViewHolder(@NonNull CitiesViewHolder holder, int position) {
-        holder.bind(cities.get(position), clickHandler);
+        holder.bind(centerList.get(position), clickHandler, position);
     }
 
-    public void update(List<City> cityList) {
-        this.cities.clear();
-        this.cities.addAll(cityList);
+    public void update(List<Center> centerList) {
+        this.centerList.clear();
+        this.centerList.addAll(centerList);
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return cities.size();
+        return centerList.size();
     }
 
     class CitiesViewHolder extends RecyclerView.ViewHolder {
@@ -61,10 +61,11 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CitiesView
             this.binding = binding;
         }
 
-        public void bind(City city, CityClickHandler clickHandler) {
-            binding.cardText.setText(city.name);
-            Glide.with(context).load(city.imageUrl).into(binding.cardImage);
-            binding.getRoot().setOnClickListener(v -> clickHandler.onCitiesClicked(city));
+        public void bind(Center center, CenterClickHandler clickHandler, int position) {
+            binding.cardText.setText(center.name);
+            Glide.with(context).load(center.imageUrl).into(binding.cardImage);
+            binding.getRoot().setOnClickListener(v ->
+                    clickHandler.onCenterClicker(center));
         }
     }
 }

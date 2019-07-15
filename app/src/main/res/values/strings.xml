@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zom.fit</string>
+    <string name="app_name">zom.fit</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -10,4 +10,8 @@
     <string name="completed_bookings_label">Completed Bookings</string>
     <string name="all_cities_label">All Cities</string>
     <string name="all_centers_label">All Centers</string>
+    <string name="email_label">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register_label">Register</string>
 </resources>

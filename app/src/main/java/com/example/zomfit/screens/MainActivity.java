@@ -1,4 +1,4 @@
-package com.example.zomfit;
+package com.example.zomfit.screens;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.zomfit.R;
 import com.example.zomfit.databinding.ActivityMainBinding;
 import com.example.zomfit.models.City;
 import com.example.zomfit.network.ApiService;

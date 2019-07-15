@@ -24,7 +24,7 @@
             android:id="@+id/cities_recycler"
             app:layout_constraintTop_toBottomOf="@id/all_cities_title"
             android:layout_marginTop="16dp"
-            android:paddingStart="16dp"
+            android:paddingStart="12dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
             />
@@ -48,7 +48,7 @@
             android:id="@+id/centers_recycler"
             app:layout_constraintTop_toBottomOf="@id/all_centers_title"
             android:layout_marginTop="16dp"
-            android:paddingStart="16dp"
+            android:paddingStart="12dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
             />

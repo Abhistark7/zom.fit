@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.FragmentHomeBinding;
+import com.example.zomfit.models.Center;
 import com.example.zomfit.models.City;
 import com.example.zomfit.network.ApiService;
 import com.example.zomfit.utils.BasicUtils;
@@ -40,10 +41,10 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-    private CitiesAdapter adapter;
+    private CitiesAdapter citiesAdapter;
+    private CenterAdapter centerAdapter;
     private OnFragmentInteractionListener mListener;
     private FragmentHomeBinding binding;
-    public static final String BASE_URL = "http://10.0.2.2:3000";
     private static Retrofit retrofit = null;
 
     public HomeFragment() {
@@ -77,31 +78,27 @@ public class HomeFragment extends Fragment {
     }
 
     private void initialize() {
+        retrofit = BasicUtils.connectApi();
         setUpCitiesRecyclerView();
-        connectAndGetApiData();
+        setUpCenterRecyclerView();
         loadCities();
+        loadCenters();
     }
 
     private void setUpCitiesRecyclerView() {
-        adapter = new CitiesAdapter(getContext(), new ClickHandler() {
-            @Override
-            public void onCitiesClicked(City city) {
-                BasicUtils.makeToast(getContext(), city.name);
-            }
-        });
+        citiesAdapter = new CitiesAdapter(getContext(), city -> BasicUtils.makeToast(getContext(), city.name));
         binding.citiesRecycler.setNestedScrollingEnabled(false);
-        binding.citiesRecycler.setAdapter(adapter);
+        binding.citiesRecycler.setAdapter(citiesAdapter);
         binding.citiesRecycler.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.HORIZONTAL, false));
     }
 
-    public void connectAndGetApiData() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+    private void setUpCenterRecyclerView() {
+        centerAdapter = new CenterAdapter(getContext(), center -> BasicUtils.makeToast(getContext(), center.name));
+        binding.centersRecycler.setNestedScrollingEnabled(false);
+        binding.centersRecycler.setAdapter(centerAdapter);
+        binding.centersRecycler.setLayoutManager(new LinearLayoutManager(
+                getActivity(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void loadCities() {
@@ -110,11 +107,27 @@ public class HomeFragment extends Fragment {
         allCities.enqueue(new Callback<List<City>>() {
             @Override
             public void onResponse(Call<List<City>> call, Response<List<City>> response) {
-                adapter.update(response.body());
+                citiesAdapter.update(response.body());
             }
 
             @Override
             public void onFailure(Call<List<City>> call, Throwable t) {
+                Log.d("error", t.toString());
+            }
+        });
+    }
+
+    private void loadCenters() {
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<List<Center>> allCenters = apiService.getAllCenters();
+        allCenters.enqueue(new Callback<List<Center>>() {
+            @Override
+            public void onResponse(Call<List<Center>> call, Response<List<Center>> response) {
+                centerAdapter.update(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Center>> call, Throwable t) {
                 Log.d("error", t.toString());
             }
         });
