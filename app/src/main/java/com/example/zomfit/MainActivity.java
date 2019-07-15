@@ -10,14 +10,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.zomfit.databinding.ActivityMainBinding;
+import com.example.zomfit.models.City;
+import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.landing.home.HomeFragment;
 import com.example.zomfit.screens.landing.myaccount.MyAccountFragment;
 import com.example.zomfit.screens.landing.mybooking.MyBookingFragment;
-import com.example.zomfit.utils.BasicUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener, MyBookingFragment.OnFragmentInteractionListener,
@@ -25,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     ActivityMainBinding binding;
     ActionBar actionBar;
+    public static final String BASE_URL = "http://10.0.2.2:3000";
+    private static Retrofit retrofit = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         loadFragment(new HomeFragment());
         actionBar = getSupportActionBar();
         setupBottomNavigation();
+        connectAndGetApiData();
+        loadCities();
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -49,6 +61,33 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = binding.navigation;
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+    }
+
+    public void connectAndGetApiData() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+    }
+
+    private void loadCities() {
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<List<City>> allCities = apiService.getAllCities();
+        allCities.enqueue(new Callback<List<City>>() {
+            @Override
+            public void onResponse(Call<List<City>> call, Response<List<City>> response) {
+                Log.d("Response1",response.body().get(0).name);
+                Log.d("Response2",response.body().get(0).id);
+                Log.d("Response3",response.body().get(0).centerIdList.get(0));
+            }
+
+            @Override
+            public void onFailure(Call<List<City>> call, Throwable t) {
+                Log.d("error", t.toString());
+            }
+        });
     }
 
     @Override

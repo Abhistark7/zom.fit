@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.example.zomfit"
         minSdkVersion 21
@@ -39,14 +43,18 @@ dependencies {
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
 
-
-    implementation 'com.google.code.gson:gson:2.8.2'
-
     // glide image library
     implementation 'com.github.bumptech.glide:glide:4.3.1'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    // Material
+    implementation 'com.google.android.material:material:1.1.0-alpha08'
+
+    // Parcel
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
 }
+

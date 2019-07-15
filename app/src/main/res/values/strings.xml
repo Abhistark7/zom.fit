@@ -8,4 +8,6 @@
     <string name="my_bookings_label">My Bookings</string>
     <string name="upcoming_bookings_label">Upcoming Bookings</string>
     <string name="completed_bookings_label">Completed Bookings</string>
+    <string name="all_cities_label">All Cities</string>
+    <string name="all_centers_label">All Centers</string>
 </resources>
