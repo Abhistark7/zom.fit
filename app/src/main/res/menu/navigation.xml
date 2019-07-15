@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/my_bookings_icon"
+        android:icon="@drawable/ic_tickets"
+        android:title="@string/my_bookings_label" />
+
+    <item
+        android:id="@+id/book_icon"
+        android:icon="@drawable/ic_running_person"
+        android:title="@string/book_label" />
+
+    <item
+        android:id="@+id/my_account_icon"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/my_account_label" />
+
+</menu>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Zom.fit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="book_label">Book</string>
+    <string name="my_account_label">My Account</string>
+    <string name="my_bookings_label">My Bookings</string>
+    <string name="upcoming_bookings_label">Upcoming Bookings</string>
+    <string name="completed_bookings_label">Completed Bookings</string>
+</resources>
