@@ -16,9 +16,9 @@ public class BasicUtils {
 
     public static Retrofit connectApi() {
         Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         return retrofit;
     }
 }

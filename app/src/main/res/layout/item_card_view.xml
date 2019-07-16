@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:scaleType="centerCrop"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorPrimaryLight"
             app:layout_constraintBottom_toBottomOf="parent"
             />
 

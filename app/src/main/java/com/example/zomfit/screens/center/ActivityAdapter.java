@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ItemActivityCardBinding;
 import com.example.zomfit.models.activity.Activity;
+import com.example.zomfit.models.activity.Timing;
 import com.example.zomfit.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -74,7 +75,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         }
 
         private void setupTimingRecycler(Activity activity) {
-            adapter = new TimingAdapter(context, timing -> clickHandler.onTimingClicked(timing));
+            adapter = new TimingAdapter(context, (timing, activity1) ->
+                    clickHandler.onTimingClicked(timing, activity));
             binding.timingRecycler.setAdapter(adapter);
             binding.timingRecycler.setNestedScrollingEnabled(false);
             binding.timingRecycler.setLayoutManager(new LinearLayoutManager(

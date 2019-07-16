@@ -25,14 +25,16 @@
         <activity
             android:name=".screens.landing.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".screens.BookNow" />
+        <activity android:name=".screens.BookNow"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".screens.center.CenterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".screens.centerlisting.CentersListing"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".screens.SignUp" />
-        <activity android:name=".screens.MainActivity" />
+        <activity android:name=".screens.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

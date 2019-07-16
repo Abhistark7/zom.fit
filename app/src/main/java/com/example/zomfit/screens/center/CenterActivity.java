@@ -13,10 +13,12 @@ import com.bumptech.glide.Glide;
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ActivityCenterBinding;
 import com.example.zomfit.models.Center;
+import com.example.zomfit.models.activity.Activity;
 import com.example.zomfit.models.activity.Timing;
 import com.example.zomfit.models.getactivities.GetActivitiesRequest;
 import com.example.zomfit.models.getactivities.GetActivitiesResponse;
 import com.example.zomfit.network.ApiService;
+import com.example.zomfit.screens.BookNow;
 import com.example.zomfit.utils.BasicUtils;
 
 import org.parceler.Parcels;
@@ -31,6 +33,13 @@ import retrofit2.Retrofit;
 public class CenterActivity extends AppCompatActivity {
 
     private static final String ARG_CENTER = "center";
+    private static final String ARG_ACTIVITY_NAME = "arg_activity";
+    private static final String ARG_ACTIVITY_TIME = "arg_time";
+    private static final String ARG_ACTIVITY_DATE = "arg_date";
+    private static final String ARG_CENTER_NAME = "arg_center";
+    private static final String ARG_CENTER_URL = "arg_center_url";
+    private static final String ARG_ACTIVITY_URL = "arg_activity_url";
+    private static final String ARG_CITY_NAME = "arg_city_name";
     private ActivityCenterBinding binding;
     private Retrofit retrofit;
     private ActivityAdapter adapter;
@@ -66,7 +75,12 @@ public class CenterActivity extends AppCompatActivity {
     }
 
     private void setupActivityRecyclerView() {
-        adapter = new ActivityAdapter(this, timing -> BasicUtils.makeToast(CenterActivity.this, timing.time));
+        adapter = new ActivityAdapter(this, new TimingClickHandler() {
+            @Override
+            public void onTimingClicked(Timing timing, Activity activity) {
+                CenterActivity.this.openBookNow(timing, activity);
+            }
+        });
         binding.activityRecycler.setNestedScrollingEnabled(true);
         binding.activityRecycler.setAdapter(adapter);
         binding.activityRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -94,6 +108,20 @@ public class CenterActivity extends AppCompatActivity {
                 Log.d("error", t.toString());
             }
         });
+    }
+
+    private void openBookNow(Timing timing, Activity activity) {
+        Intent intent = new Intent(CenterActivity.this, BookNow.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CENTER_NAME, center.name);
+        bundle.putString(ARG_CITY_NAME, center.cityName);
+        bundle.putString(ARG_ACTIVITY_NAME, activity.name);
+        bundle.putString(ARG_ACTIVITY_TIME, timing.time);
+        bundle.putString(ARG_ACTIVITY_DATE, timing.date);
+        bundle.putString(ARG_ACTIVITY_URL, activity.iconUrl);
+        bundle.putString(ARG_CENTER_URL, center.imageUrl);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void showLoadingView() {

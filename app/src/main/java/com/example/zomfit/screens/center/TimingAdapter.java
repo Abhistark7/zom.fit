@@ -69,9 +69,9 @@ public class TimingAdapter extends RecyclerView.Adapter<TimingAdapter.TimingView
                         BasicUtils.makeToast(context,
                                 "This slot is already booked, Please select another one"));
                 binding.container.setBackgroundColor(binding.getRoot()
-                        .getContext().getResources().getColor(R.color.colorPrimaryDark));
+                        .getContext().getResources().getColor(R.color.colorPrimaryLight));
             } else {
-            binding.getRoot().setOnClickListener(v -> timingClickHandler.onTimingClicked(timing));
+            binding.getRoot().setOnClickListener(v -> timingClickHandler.onTimingClicked(timing, null));
             }
         }
     }

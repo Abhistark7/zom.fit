@@ -31,7 +31,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:scaleType="fitXY"
-                android:background="@color/white"
                 />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:id="@+id/divider"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimaryLight"
                 android:layout_marginTop="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 />

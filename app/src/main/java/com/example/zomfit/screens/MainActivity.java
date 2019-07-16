@@ -40,25 +40,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private static final String ARG_USER = "user";
     private ActivityMainBinding binding;
-    private ActionBar actionBar;
     private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         extract();
         loadFragment(new HomeFragment());
-        actionBar = getSupportActionBar();
         setupBottomNavigation();
     }
 
     private void extract() {
         Intent intent = getIntent();
-        user = Parcels.unwrap(intent.getExtras().getParcelable(ARG_USER));
-        Log.d("user logged in", user.name);
-        saveUserToSharedPreferences(user);
+        if(intent.getExtras() != null) {
+            user = Parcels.unwrap(intent.getExtras().getParcelable(ARG_USER));
+            Log.d("user logged in", user.name);
+            saveUserToSharedPreferences(user);
+        }
     }
 
     private void saveUserToSharedPreferences(User user) {

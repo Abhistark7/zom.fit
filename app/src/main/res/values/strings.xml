@@ -13,6 +13,8 @@
     <string name="email_label">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="book_now">Book Now</string>
+    <string name="booking_details">Booking Detail</string>
     <string name="register_label">Register</string>
     <string name="an_error_occurred_label">An Error Occurred!</string>
     <string name="is_logged_in_label">is logged in</string>

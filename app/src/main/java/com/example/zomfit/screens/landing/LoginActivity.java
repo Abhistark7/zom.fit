@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         if (show) {
             binding.loginButton.setText("");
             binding.progressCircular.setVisibility(View.VISIBLE);
-            binding.loginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            binding.loginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
         } else {
             binding.loginButton.setBackgroundColor(getResources().getColor(R.color.black));
             binding.loginButton.setText(getString(R.string.login));
