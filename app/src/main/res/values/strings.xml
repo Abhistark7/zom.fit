@@ -14,4 +14,12 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register_label">Register</string>
+    <string name="an_error_occurred_label">An Error Occurred!</string>
+    <string name="is_logged_in_label">is logged in</string>
+    <string name="user_id_label">user id</string>
+    <string name="user_name_label">user name</string>
+    <string name="user_email_label">user email</string>
+    <string name="user_password_label">user password</string>
+    <string name="centers_in_label">Centers in %s</string>
+    <string name="preference_file_key">xxxxxxxxxx</string>
 </resources>

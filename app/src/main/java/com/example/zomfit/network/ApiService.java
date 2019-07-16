@@ -2,6 +2,10 @@ package com.example.zomfit.network;
 
 import com.example.zomfit.models.Center;
 import com.example.zomfit.models.City;
+import com.example.zomfit.models.getactivities.GetActivitiesRequest;
+import com.example.zomfit.models.getactivities.GetActivitiesResponse;
+import com.example.zomfit.models.getcenters.GetCentersRequest;
+import com.example.zomfit.models.getcenters.GetCentersResponse;
 import com.example.zomfit.models.login.LoginRequest;
 import com.example.zomfit.models.login.LoginResponse;
 
@@ -22,4 +26,10 @@ public interface ApiService {
 
     @POST("/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
+    @POST("/getCentersById")
+    Call<GetCentersResponse> getCenterByCity(@Body GetCentersRequest getCentersRequest);
+
+    @POST("/getActivitiesById")
+    Call<GetActivitiesResponse> getActivityById(@Body GetActivitiesRequest getActivitiesRequest);
 }

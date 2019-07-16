@@ -13,21 +13,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screens.landing.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            >
+        <activity
+            android:name=".screens.SplashActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".screens.landing.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity android:name=".screens.BookNow" />
-        <activity android:name=".screens.Center" />
-        <activity android:name=".screens.CentersListing" />
+        <activity android:name=".screens.center.CenterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".screens.centerlisting.CentersListing"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".screens.SignUp" />
-        <activity android:name=".screens.MainActivity">
-
-        </activity>
+        <activity android:name=".screens.MainActivity" />
     </application>
 
 </manifest>

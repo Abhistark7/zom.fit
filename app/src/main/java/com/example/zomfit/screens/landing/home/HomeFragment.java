@@ -1,6 +1,7 @@
 package com.example.zomfit.screens.landing.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,7 +19,11 @@ import com.example.zomfit.databinding.FragmentHomeBinding;
 import com.example.zomfit.models.Center;
 import com.example.zomfit.models.City;
 import com.example.zomfit.network.ApiService;
+import com.example.zomfit.screens.center.CenterActivity;
+import com.example.zomfit.screens.centerlisting.CentersListing;
 import com.example.zomfit.utils.BasicUtils;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -26,7 +31,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +41,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private static final String ARG_CITY_ID = "cityId";
+    private static final String ARG_CITY_NAME = "city_name";
+    private static final String ARG_CENTER = "center";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -78,6 +85,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initialize() {
+        showLoadingView();
         retrofit = BasicUtils.connectApi();
         setUpCitiesRecyclerView();
         setUpCenterRecyclerView();
@@ -86,7 +94,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setUpCitiesRecyclerView() {
-        citiesAdapter = new CitiesAdapter(getContext(), city -> BasicUtils.makeToast(getContext(), city.name));
+        citiesAdapter = new CitiesAdapter(getContext(), city -> openCenterListing(city));
         binding.citiesRecycler.setNestedScrollingEnabled(false);
         binding.citiesRecycler.setAdapter(citiesAdapter);
         binding.citiesRecycler.setLayoutManager(new LinearLayoutManager(
@@ -94,7 +102,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setUpCenterRecyclerView() {
-        centerAdapter = new CenterAdapter(getContext(), center -> BasicUtils.makeToast(getContext(), center.name));
+        centerAdapter = new CenterAdapter(getContext(), center -> openCenterActivity(center));
         binding.centersRecycler.setNestedScrollingEnabled(false);
         binding.centersRecycler.setAdapter(centerAdapter);
         binding.centersRecycler.setLayoutManager(new LinearLayoutManager(
@@ -124,13 +132,50 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Center>> call, Response<List<Center>> response) {
                 centerAdapter.update(response.body());
+                showContentView();
             }
 
             @Override
             public void onFailure(Call<List<Center>> call, Throwable t) {
+                showErrorView();
                 Log.d("error", t.toString());
             }
         });
+    }
+
+    private void showLoadingView() {
+        binding.contentView.setVisibility(View.GONE);
+        binding.errorView.setVisibility(View.GONE);
+        binding.loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorView() {
+        binding.contentView.setVisibility(View.GONE);
+        binding.errorView.setVisibility(View.VISIBLE);
+        binding.loadingView.setVisibility(View.GONE);
+    }
+
+    private void showContentView() {
+        binding.contentView.setVisibility(View.VISIBLE);
+        binding.errorView.setVisibility(View.GONE);
+        binding.loadingView.setVisibility(View.GONE);
+    }
+
+    private void openCenterListing(City city) {
+        Intent intent = new Intent(getActivity(), CentersListing.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(ARG_CITY_ID, city.centerIdList);
+        bundle.putString(ARG_CITY_NAME, city.name);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    private void openCenterActivity(Center center) {
+        Intent intent = new Intent(getActivity(), CenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_CENTER, Parcels.wrap(center));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void onButtonPressed(Uri uri) {

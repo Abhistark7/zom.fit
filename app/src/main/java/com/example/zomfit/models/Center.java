@@ -24,4 +24,7 @@ public class Center {
     @SerializedName("imageUrl")
     public String imageUrl;
 
+    @SerializedName("rating")
+    public String rating;
+
 }

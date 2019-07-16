@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Parcel
 public class City {
@@ -17,7 +17,7 @@ public class City {
     public String name;
 
     @SerializedName("centerIdList")
-    public List<String> centerIdList;
+    public ArrayList<String> centerIdList;
 
     @SerializedName("imageUrl")
     public String imageUrl;

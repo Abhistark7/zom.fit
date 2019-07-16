@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +17,14 @@ import android.view.MenuItem;
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ActivityMainBinding;
 import com.example.zomfit.models.City;
+import com.example.zomfit.models.User;
 import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.landing.home.HomeFragment;
 import com.example.zomfit.screens.landing.myaccount.MyAccountFragment;
 import com.example.zomfit.screens.landing.mybooking.MyBookingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -32,20 +38,39 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         HomeFragment.OnFragmentInteractionListener, MyBookingFragment.OnFragmentInteractionListener,
         MyAccountFragment.OnFragmentInteractionListener {
 
-    ActivityMainBinding binding;
-    ActionBar actionBar;
-    public static final String BASE_URL = "http://10.0.2.2:3000";
-    private static Retrofit retrofit = null;
+    private static final String ARG_USER = "user";
+    private ActivityMainBinding binding;
+    private ActionBar actionBar;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        extract();
         loadFragment(new HomeFragment());
         actionBar = getSupportActionBar();
         setupBottomNavigation();
-        connectAndGetApiData();
-        loadCities();
+    }
+
+    private void extract() {
+        Intent intent = getIntent();
+        user = Parcels.unwrap(intent.getExtras().getParcelable(ARG_USER));
+        Log.d("user logged in", user.name);
+        saveUserToSharedPreferences(user);
+    }
+
+    private void saveUserToSharedPreferences(User user) {
+        SharedPreferences sharedPref = MainActivity.this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.is_logged_in_label), true);
+        editor.putString(getString(R.string.user_id_label), user.userId);
+        editor.putString(getString(R.string.user_email_label), user.email);
+        editor.putString(getString(R.string.user_name_label), user.name);
+        editor.putString(getString(R.string.user_password_label), user.password);
+        editor.apply();
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -62,33 +87,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = binding.navigation;
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-    }
-
-    public void connectAndGetApiData() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-    }
-
-    private void loadCities() {
-        ApiService apiService = retrofit.create(ApiService.class);
-        Call<List<City>> allCities = apiService.getAllCities();
-        allCities.enqueue(new Callback<List<City>>() {
-            @Override
-            public void onResponse(Call<List<City>> call, Response<List<City>> response) {
-                Log.d("Response1",response.body().get(0).name);
-                Log.d("Response2",response.body().get(0).id);
-                Log.d("Response3",response.body().get(0).centerIdList.get(0));
-            }
-
-            @Override
-            public void onFailure(Call<List<City>> call, Throwable t) {
-                Log.d("error", t.toString());
-            }
-        });
     }
 
     @Override

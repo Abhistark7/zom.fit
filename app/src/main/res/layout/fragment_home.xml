@@ -1,9 +1,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/contentView"
         >
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -14,11 +19,12 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_margin="16dp"
             android:text="@string/all_cities_label"
+            app:fontFamily="@font/product_sans_bold"
             android:textColor="@color/black"
             android:textSize="16sp"
             />
 
-        \<androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cities_recycler"
@@ -38,6 +44,7 @@
             app:layout_constraintTop_toBottomOf="@id/cities_recycler"
             android:layout_margin="16dp"
             android:text="@string/all_centers_label"
+            app:fontFamily="@font/product_sans_bold"
             android:textColor="@color/black"
             android:textSize="16sp"
             />
@@ -53,7 +60,22 @@
             android:orientation="horizontal"
             />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:visibility="gone"
+        layout="@layout/error_view"
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <include
+        android:visibility="gone"
+        layout="@layout/loading_view"
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    </RelativeLayout>
 
 </layout>

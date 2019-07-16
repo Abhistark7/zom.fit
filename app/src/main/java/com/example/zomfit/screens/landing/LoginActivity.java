@@ -14,11 +14,14 @@ import androidx.databinding.DataBindingUtil;
 
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ActivityLoginBinding;
+import com.example.zomfit.models.User;
 import com.example.zomfit.models.login.LoginRequest;
 import com.example.zomfit.models.login.LoginResponse;
 import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.MainActivity;
 import com.example.zomfit.utils.BasicUtils;
+
+import org.parceler.Parcels;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +31,7 @@ import retrofit2.Retrofit;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int BASE_LENGTH = 0;
+    private static final String ARG_USER = "user";
     private boolean isUsernameFilled;
     private boolean isPasswordFilled;
     private Retrofit retrofit;
@@ -125,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.body().status) {
                     Log.d("res", response.body().user.toString());
-                    openHomeActivity();
+                    openHomeActivity(response.body().user);
                 } else {
                     showLoadingView(false);
                     BasicUtils.makeToast(LoginActivity.this, "Login failed!");
@@ -154,8 +158,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void openHomeActivity() {
+    private void openHomeActivity(User user) {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_USER, Parcels.wrap(user));
+        intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
