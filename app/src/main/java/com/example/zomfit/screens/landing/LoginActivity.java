@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             binding.loginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         } else {
             binding.loginButton.setEnabled(false);
-            binding.loginButton.setBackgroundColor(getResources().getColor(R.color.black));
+            binding.loginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
         }
     }
 
@@ -128,17 +128,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.body().status) {
-                    Log.d("res", response.body().user.toString());
                     openHomeActivity(response.body().user);
                 } else {
                     showLoadingView(false);
-                    BasicUtils.makeToast(LoginActivity.this, "Login failed!");
+                    BasicUtils.makeToast(LoginActivity.this, getString(R.string.login_failed_label));
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                BasicUtils.makeToast(LoginActivity.this, "An Error occurred");
+                BasicUtils.makeToast(LoginActivity.this, getString(R.string.an_error_occurred_label));
                 showLoadingView(false);
             }
         });

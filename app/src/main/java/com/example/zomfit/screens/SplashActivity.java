@@ -20,6 +20,7 @@ import org.parceler.Parcels;
 public class SplashActivity extends AppCompatActivity {
 
     private static final String ARG_USER = "user";
+    private static final int LAUNCH_DELAY = 1000;
     private ActivitySplashBinding binding;
 
     @Override
@@ -34,29 +35,21 @@ public class SplashActivity extends AppCompatActivity {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         boolean isLoggedIn = sharedPref.getBoolean(getString(R.string.is_logged_in_label), false);
         if(isLoggedIn) {
-            User user = new User();
-            user.userId = sharedPref.getString(getString(R.string.user_id_label), "");
-            user.email = sharedPref.getString(getString(R.string.user_email_label), "");
-            user.name = sharedPref.getString(getString(R.string.user_name_label), "");
-            user.password = sharedPref.getString(getString(R.string.user_password_label), "");
-            startMainActivity(user);
+            startMainActivity();
         } else {
             startLoginActivity();
         }
     }
 
-    private void startMainActivity(User user) {
+    private void startMainActivity() {
         final Runnable r = () -> {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ARG_USER, Parcels.wrap(user));
-            intent.putExtras(bundle);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         };
         Handler handler = new Handler();
-        handler.postDelayed(r, 1000);
+        handler.postDelayed(r, LAUNCH_DELAY);
     }
 
     private void startLoginActivity() {
@@ -67,6 +60,6 @@ public class SplashActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         };
         Handler handler = new Handler();
-        handler.postDelayed(r, 1000);
+        handler.postDelayed(r, LAUNCH_DELAY);
     }
 }

@@ -37,6 +37,8 @@ public class BookNow extends AppCompatActivity {
     private static final String ARG_ACTIVITY_URL = "arg_activity_url";
     private static final String ARG_ACTIVITY_ID = "arg_activity_id";
     private static final String ARG_TIMING_ID = "arg_timing_id";
+    private static final String MY_BOOKING_FRAGMENT = "my_booking_fragment";
+    private static final String ARG_START_FRAGMENT = "arg_fragment";
     private String activityName;
     private String activityTime;
     private String activityDate;
@@ -114,23 +116,26 @@ public class BookNow extends AppCompatActivity {
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 showProgressBar(false);
                 if(response.body().status) {
-                    BasicUtils.makeToast(BookNow.this, "Activity booked!");
+                    BasicUtils.makeToast(BookNow.this, getString(R.string.activity_booked_label));
                     openMainActivity();
                 } else {
-                    BasicUtils.makeToast(BookNow.this, "An error occurred");
+                    BasicUtils.makeToast(BookNow.this, getString(R.string.an_error_occurred_label));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
                 showProgressBar(false);
-                BasicUtils.makeToast(BookNow.this, "An error occurred");
+                BasicUtils.makeToast(BookNow.this, getString(R.string.an_error_occurred_label));
             }
         });
     }
 
     private void openMainActivity() {
         Intent intent = new Intent(BookNow.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_START_FRAGMENT, MY_BOOKING_FRAGMENT);
+        intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

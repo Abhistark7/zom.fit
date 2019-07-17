@@ -1,24 +1,21 @@
 package com.example.zomfit.screens;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ActivityMainBinding;
-import com.example.zomfit.models.City;
 import com.example.zomfit.models.User;
-import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.landing.home.HomeFragment;
 import com.example.zomfit.screens.landing.myaccount.MyAccountFragment;
 import com.example.zomfit.screens.landing.mybooking.CompletedBookingFragment;
@@ -28,13 +25,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.parceler.Parcels;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener, MyBookingFragment.OnFragmentInteractionListener,
@@ -42,25 +34,61 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         CompletedBookingFragment.OnFragmentInteractionListener {
 
     private static final String ARG_USER = "user";
+    private static final String MY_BOOKING_FRAGMENT = "my_booking_fragment";
+    private static final String BOOK_FRAGMENT = "book_fragment";
+    private static final String MY_ACCOUNT_FRAGMENT = "my_account_fragment";
+    private static final String ARG_START_FRAGMENT = "arg_fragment";
     private ActivityMainBinding binding;
     private User user;
+    private String startFragment;
+    final Fragment fragment1 = new HomeFragment();
+    final Fragment fragment2 = new MyBookingFragment();
+    final Fragment fragment3 = new MyAccountFragment();
+    final FragmentManager fm = getSupportFragmentManager();
+    Fragment active = fragment1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        extract();
-        loadFragment(new HomeFragment());
+        binding.navigation.setSelectedItemId(R.id.book_icon);
+        fm.beginTransaction().add(R.id.main_container, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment2, "2").hide(fragment2).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment1, "1").commit();
         setupBottomNavigation();
+        extract();
     }
 
     private void extract() {
         Intent intent = getIntent();
-        if(intent.getExtras() != null) {
+        if (intent.getExtras() != null) {
             user = Parcels.unwrap(intent.getExtras().getParcelable(ARG_USER));
-            Log.d("user logged in", user.name);
-            saveUserToSharedPreferences(user);
+            startFragment = intent.getExtras().getString(ARG_START_FRAGMENT);
+            if (startFragment != null) {
+                startSelectedFragment(startFragment);
+            }
+            if (user != null) {
+                saveUserToSharedPreferences(user);
+            }
+        }
+    }
+
+    private void startSelectedFragment(String startFragment) {
+        switch (startFragment) {
+            case MY_BOOKING_FRAGMENT:
+                fm.beginTransaction().hide(active).show(fragment2).commit();
+                binding.navigation.setSelectedItemId(R.id.my_bookings_icon);
+                active = fragment2;
+                break;
+            case BOOK_FRAGMENT:
+                fm.beginTransaction().hide(active).show(fragment1).commit();
+                active = fragment1;
+                break;
+            case MY_ACCOUNT_FRAGMENT:
+                fm.beginTransaction().hide(active).show(fragment3).commit();
+                active = fragment3;
+                break;
         }
     }
 
@@ -73,18 +101,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         editor.putString(getString(R.string.user_email_label), user.email);
         editor.putString(getString(R.string.user_name_label), user.name);
         editor.putString(getString(R.string.user_password_label), user.password);
-        editor.apply();
-    }
-
-    private boolean loadFragment(Fragment fragment) {
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_container, fragment)
-                    .commit();
-            return true;
+        if (user.likedActivitiesList != null && user.savedAddressList != null) {
+            Set<String> likedActivitySet = new HashSet<>(user.likedActivitiesList);
+            Set<String> savedCenterSet = new HashSet<>(user.savedCenterIdList);
+            editor.putStringSet(getString(R.string.user_saved_center), savedCenterSet);
+            editor.putStringSet(getString(R.string.user_liked_activity), likedActivitySet);
         }
-        return false;
+        editor.apply();
     }
 
     private void setupBottomNavigation() {
@@ -99,19 +122,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.my_bookings_icon:
-                fragment = new MyBookingFragment();
-                break;
+                fm.beginTransaction().hide(active).show(fragment2).commit();
+                active = fragment2;
+                return true;
             case R.id.book_icon:
-                fragment = new HomeFragment();
-                break;
+                fm.beginTransaction().hide(active).show(fragment1).commit();
+                active = fragment1;
+                return true;
             case R.id.my_account_icon:
-                fragment = new MyAccountFragment();
-                break;
+                fm.beginTransaction().hide(active).show(fragment3).commit();
+                active = fragment3;
+                return true;
         }
-        loadFragment(fragment);
-        return true;
+        return false;
     }
 }

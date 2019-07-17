@@ -3,7 +3,6 @@ package com.example.zomfit.utils;
 import android.content.Context;
 import android.widget.ImageView;
 
-import com.example.zomfit.R;
 import com.pixplicity.sharp.Sharp;
 
 import java.io.IOException;
@@ -21,7 +20,6 @@ public class ImageUtils {
 
     public static void fetchSvg(Context context, String url, final ImageView target) {
         if (httpClient == null) {
-            // Use cache for performance and basic offline capability
             httpClient = new OkHttpClient.Builder()
                     .cache(new Cache(context.getCacheDir(), 5 * 1024 * 1014))
                     .build();
@@ -31,7 +29,6 @@ public class ImageUtils {
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                target.setImageDrawable(R.drawable.ic_back_icon);
             }
 
             @Override

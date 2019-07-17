@@ -75,6 +75,7 @@ public class MyBookingFragment extends Fragment implements UpcomingBookingFragme
         adapter = new FragmentAdapter(getChildFragmentManager());
         adapter.addFragment(new UpcomingBookingFragment(), "Upcoming Booking");
         adapter.addFragment(new CompletedBookingFragment(), "Completed Booking");
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(adapter);
     }
 

@@ -38,7 +38,7 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CitiesView
 
     @Override
     public void onBindViewHolder(@NonNull CitiesViewHolder holder, int position) {
-        holder.bind(centerList.get(position), clickHandler, position);
+        holder.bind(centerList.get(position), clickHandler);
     }
 
     public void update(List<Center> centerList) {
@@ -61,7 +61,7 @@ public class CenterAdapter extends RecyclerView.Adapter<CenterAdapter.CitiesView
             this.binding = binding;
         }
 
-        public void bind(Center center, CenterClickHandler clickHandler, int position) {
+        public void bind(Center center, CenterClickHandler clickHandler) {
             binding.cardText.setText(center.name);
             Glide.with(context).load(center.imageUrl).into(binding.cardImage);
             binding.getRoot().setOnClickListener(v ->

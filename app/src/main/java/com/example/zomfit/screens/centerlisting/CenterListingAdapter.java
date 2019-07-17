@@ -65,6 +65,7 @@ public class CenterListingAdapter extends RecyclerView.Adapter<CenterListingAdap
         public void bind(Center center, CenterClickHandler clickHandler) {
             binding.centerText.setText(center.name);
             binding.cityText.setText(center.cityName);
+            binding.ratingValue.setText(center.rating);
             Glide.with(context).load(center.imageUrl).into(binding.cardImage);
             binding.getRoot().setOnClickListener(v -> clickHandler.onCenterClicker(center));
         }

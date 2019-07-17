@@ -64,14 +64,14 @@ public class TimingAdapter extends RecyclerView.Adapter<TimingAdapter.TimingView
         public void bind(Timing timing, TimingClickHandler timingClickHandler) {
             binding.timingText.setText(timing.time);
             binding.dateText.setText(timing.date);
-            if(!timing.isAvailable) {
+            if (!timing.isAvailable) {
                 binding.getRoot().setOnClickListener(v ->
                         BasicUtils.makeToast(context,
-                                "This slot is already booked, please select another one"));
+                                binding.getRoot().getContext().getString(R.string.slot_booked_message)));
                 binding.container.setBackgroundColor(binding.getRoot()
                         .getContext().getResources().getColor(R.color.colorPrimaryLight));
             } else {
-            binding.getRoot().setOnClickListener(v -> timingClickHandler.onTimingClicked(timing, null));
+                binding.getRoot().setOnClickListener(v -> timingClickHandler.onTimingClicked(timing, null));
             }
         }
     }

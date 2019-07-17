@@ -27,4 +27,7 @@ public class Center {
     @SerializedName("rating")
     public String rating;
 
+    @SerializedName("likedUserIds")
+    public List<String> likedUserids;
+
 }

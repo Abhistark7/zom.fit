@@ -32,14 +32,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
     private static final String ARG_CITY_ID = "cityId";
     private static final String ARG_CITY_NAME = "city_name";
@@ -55,16 +47,6 @@ public class HomeFragment extends Fragment {
     private static Retrofit retrofit = null;
 
     public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -120,7 +102,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<City>> call, Throwable t) {
-                Log.d("error", t.toString());
+                showErrorView();
             }
         });
     }
@@ -138,7 +120,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<List<Center>> call, Throwable t) {
                 showErrorView();
-                Log.d("error", t.toString());
             }
         });
     }

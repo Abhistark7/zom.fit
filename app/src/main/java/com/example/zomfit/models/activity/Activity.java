@@ -26,4 +26,7 @@ public class Activity {
 
     @SerializedName("rating")
     public String rating;
+
+    @SerializedName("likedUserIds")
+    public List<String> likedUserids;
 }

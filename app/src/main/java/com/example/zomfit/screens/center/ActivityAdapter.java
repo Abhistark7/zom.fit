@@ -14,7 +14,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.zomfit.R;
 import com.example.zomfit.databinding.ItemActivityCardBinding;
 import com.example.zomfit.models.activity.Activity;
-import com.example.zomfit.models.activity.Timing;
 import com.example.zomfit.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -26,11 +25,15 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     private List<Activity> activityList;
     private TimingAdapter adapter;
     private TimingClickHandler clickHandler;
+    private LikeClickHandler likeClickHandler;
+    private String userId;
 
-    public ActivityAdapter(Context context, TimingClickHandler timingClickHandler) {
+    public ActivityAdapter(Context context, TimingClickHandler timingClickHandler, String userId, LikeClickHandler clickHandler) {
         this.context = context;
         activityList = new ArrayList<>();
         this.clickHandler = timingClickHandler;
+        this.likeClickHandler = clickHandler;
+        this.userId = userId;
     }
 
     @NonNull
@@ -43,7 +46,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
 
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
-        holder.bind(activityList.get(position));
+        holder.bind(activityList.get(position), userId, likeClickHandler);
     }
 
     public void update(List<Activity> activityList) {
@@ -60,19 +63,44 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     class ActivityViewHolder extends RecyclerView.ViewHolder {
 
         private ItemActivityCardBinding binding;
+        private boolean isLiked;
 
         public ActivityViewHolder(ItemActivityCardBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        public void bind(Activity activity) {
+        public void bind(Activity activity, String userId, LikeClickHandler likeClickHandler) {
             binding.activityName.setText(activity.name);
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             ImageUtils.fetchSvg(context, activity.iconUrl, binding.cardImage);
             setupTimingRecycler(activity);
+            handelLikeButton(activity, binding, userId, likeClickHandler);
         }
+
+        private void handelLikeButton(Activity activity, ItemActivityCardBinding binding,
+                                      String userId, LikeClickHandler likeClickHandler) {
+            isLiked = activity.likedUserids.contains(userId);
+            if(isLiked) {
+                binding.likeButton.setImageDrawable(binding.getRoot().getContext().getDrawable(R.drawable.ic_heart_filled));
+            } else {
+                binding.likeButton.setImageDrawable(binding.getRoot().getContext().getDrawable(R.drawable.ic_heart_empty));
+            }
+            binding.likeButton.setOnClickListener(v -> {
+                if(isLiked) {
+                    likeClickHandler.unlike(userId, activity.activityId);
+                    binding.likeButton.setImageDrawable(binding.getRoot().getContext().getDrawable(R.drawable.ic_heart_empty));
+                    isLiked = false;
+                } else {
+                    likeClickHandler.like(userId, activity.activityId);
+                    binding.likeButton.setImageDrawable(binding.getRoot().getContext().getDrawable(R.drawable.ic_heart_filled));
+                    isLiked = true;
+                }
+            });
+        }
+
+
 
         private void setupTimingRecycler(Activity activity) {
             adapter = new TimingAdapter(context, (timing, activity1) ->

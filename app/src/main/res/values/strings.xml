@@ -22,6 +22,15 @@
     <string name="user_name_label">user name</string>
     <string name="user_email_label">user email</string>
     <string name="user_password_label">user password</string>
+    <string name="user_liked_activity">user liked activity</string>
+    <string name="user_saved_center">user saved center</string>
     <string name="centers_in_label">Centers in %s</string>
     <string name="preference_file_key">xxxxxxxxxx</string>
+    <string name="saved_centers_label">Saved Centers</string>
+    <string name="liked_activities_label">Liked Activities</string>
+    <string name="slot_booked_message">This slot is already booked, please select another one</string>
+    <string name="zom">zom.</string>
+    <string name="fit">fit</string>
+    <string name="activity_booked_label">Activity booked!</string>
+    <string name="login_failed_label">Login failed!</string>
 </resources>

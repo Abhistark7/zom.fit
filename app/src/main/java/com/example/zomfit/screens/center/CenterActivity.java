@@ -1,6 +1,8 @@
 package com.example.zomfit.screens.center;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +17,18 @@ import com.example.zomfit.databinding.ActivityCenterBinding;
 import com.example.zomfit.models.Center;
 import com.example.zomfit.models.activity.Activity;
 import com.example.zomfit.models.activity.Timing;
+import com.example.zomfit.models.book.BaseResponse;
 import com.example.zomfit.models.getactivities.GetActivitiesRequest;
 import com.example.zomfit.models.getactivities.GetActivitiesResponse;
+import com.example.zomfit.models.like.LikeActivityRequest;
+import com.example.zomfit.models.save.SaveCenterRequest;
 import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.BookNow;
 import com.example.zomfit.utils.BasicUtils;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,10 +48,16 @@ public class CenterActivity extends AppCompatActivity {
     private static final String ARG_CITY_NAME = "arg_city_name";
     private static final String ARG_ACTIVITY_ID = "arg_activity_id";
     private static final String ARG_TIMING_ID = "arg_timing_id";
+    private static final String RETROFIT = "retrofit";
+    private static final String SUCCESS = "success";
+    private static final String FAILURE = "failure";
     private ActivityCenterBinding binding;
     private Retrofit retrofit;
     private ActivityAdapter adapter;
     private Center center;
+    private List<String> savedCenters = new ArrayList<>();
+    private List<String> likedActivity = new ArrayList<>();
+    private boolean isBookmarked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +86,20 @@ public class CenterActivity extends AppCompatActivity {
         binding.centerText.setText(center.name);
         binding.cityText.setText(center.cityName);
         binding.ratingValue.setText(center.rating);
+        handleBookmarkButton();
     }
 
     private void setupActivityRecyclerView() {
-        adapter = new ActivityAdapter(this, new TimingClickHandler() {
+        adapter = new ActivityAdapter(this, (timing, activity) ->
+                CenterActivity.this.openBookNow(timing, activity), getUserId(), new LikeClickHandler() {
             @Override
-            public void onTimingClicked(Timing timing, Activity activity) {
-                CenterActivity.this.openBookNow(timing, activity);
+            public void like(String userId, String activityId) {
+                likeActivity(userId, activityId);
+            }
+
+            @Override
+            public void unlike(String userId, String activityId) {
+                unlikeActivity(userId, activityId);
             }
         });
         binding.activityRecycler.setNestedScrollingEnabled(true);
@@ -126,6 +145,124 @@ public class CenterActivity extends AppCompatActivity {
         bundle.putString(ARG_TIMING_ID, timing.timingId);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void handleBookmarkButton() {
+        isBookmarked = center.likedUserids.contains(getUserId());
+        if (isBookmarked) {
+            binding.bookmark.setImageDrawable(
+                    binding.getRoot().getContext().getDrawable(R.drawable.ic_bookmark_filled));
+        } else {
+            binding.bookmark.setImageDrawable(
+                    binding.getRoot().getContext().getDrawable(R.drawable.ic_bookmark_empty));
+        }
+        binding.bookmark.setOnClickListener(v -> {
+            if (isBookmarked) {
+                binding.bookmark.setImageDrawable(
+                        binding.getRoot().getContext().getDrawable(R.drawable.ic_bookmark_empty));
+                unSaveCenter(getUserId(), center.id);
+                isBookmarked = false;
+            } else {
+                binding.bookmark.setImageDrawable(
+                        binding.getRoot().getContext().getDrawable(R.drawable.ic_bookmark_filled));
+                saveCenter(getUserId(), center.id);
+                isBookmarked = true;
+            }
+        });
+    }
+
+    private String getUserId() {
+        SharedPreferences sharedPref = CenterActivity.this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        return sharedPref.getString(getString(R.string.user_id_label), "");
+    }
+
+    private void likeActivity(String userId, String activityId) {
+        LikeActivityRequest request = new LikeActivityRequest();
+        request.activityId = activityId;
+        request.userId = userId;
+        ApiService apiService = retrofit.create(ApiService.class);
+        apiService.likeActivity(request).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.body().status) {
+                    Log.d(RETROFIT, SUCCESS);
+                } else {
+                    Log.d(RETROFIT, FAILURE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Log.d(RETROFIT, FAILURE);
+            }
+        });
+    }
+
+    private void unlikeActivity(String userId, String activityId) {
+        LikeActivityRequest request = new LikeActivityRequest();
+        request.activityId = activityId;
+        request.userId = userId;
+        ApiService apiService = retrofit.create(ApiService.class);
+        apiService.unlikeActivity(request).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.body().status) {
+                    Log.d(RETROFIT, SUCCESS);
+                } else {
+                    Log.d(RETROFIT, FAILURE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Log.d(RETROFIT, FAILURE);
+            }
+        });
+    }
+
+    private void saveCenter(String userId, String centerId) {
+        SaveCenterRequest request = new SaveCenterRequest();
+        request.centerId = centerId;
+        request.userId = userId;
+        ApiService apiService = retrofit.create(ApiService.class);
+        apiService.saveCenter(request).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.body().status) {
+                    Log.d(RETROFIT, SUCCESS);
+                } else {
+                    Log.d(RETROFIT, FAILURE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Log.d(RETROFIT, FAILURE);
+            }
+        });
+    }
+
+    private void unSaveCenter(String userId, String centerId) {
+        SaveCenterRequest request = new SaveCenterRequest();
+        request.centerId = centerId;
+        request.userId = userId;
+        ApiService apiService = retrofit.create(ApiService.class);
+        apiService.unSaveCenter(request).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.body().status) {
+                    Log.d(RETROFIT, SUCCESS);
+                } else {
+                    Log.d(RETROFIT, FAILURE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Log.d(RETROFIT, FAILURE);
+            }
+        });
     }
 
     private void showLoadingView() {
