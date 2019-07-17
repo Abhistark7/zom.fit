@@ -4,6 +4,8 @@ import com.example.zomfit.models.book.BaseResponse;
 import com.example.zomfit.models.Center;
 import com.example.zomfit.models.City;
 import com.example.zomfit.models.book.BookActivityRequest;
+import com.example.zomfit.models.booking.MyBookingRequest;
+import com.example.zomfit.models.booking.MyBookingResponse;
 import com.example.zomfit.models.getactivities.GetActivitiesRequest;
 import com.example.zomfit.models.getactivities.GetActivitiesResponse;
 import com.example.zomfit.models.getcenters.GetCentersRequest;
@@ -37,4 +39,10 @@ public interface ApiService {
 
     @POST("/bookActivity")
     Call<BaseResponse> bookActivity(@Body BookActivityRequest request);
+
+    @POST("/getUpcomingBooking")
+    Call<MyBookingResponse> getUpcomingBooking(@Body MyBookingRequest request);
+
+    @POST("/getCompletedBooking")
+    Call<MyBookingResponse> getCompletedBooking(@Body MyBookingRequest request);
 }

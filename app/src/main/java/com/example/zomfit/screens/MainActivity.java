@@ -21,7 +21,9 @@ import com.example.zomfit.models.User;
 import com.example.zomfit.network.ApiService;
 import com.example.zomfit.screens.landing.home.HomeFragment;
 import com.example.zomfit.screens.landing.myaccount.MyAccountFragment;
+import com.example.zomfit.screens.landing.mybooking.CompletedBookingFragment;
 import com.example.zomfit.screens.landing.mybooking.MyBookingFragment;
+import com.example.zomfit.screens.landing.mybooking.UpcomingBookingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.parceler.Parcels;
@@ -36,7 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener, MyBookingFragment.OnFragmentInteractionListener,
-        MyAccountFragment.OnFragmentInteractionListener {
+        MyAccountFragment.OnFragmentInteractionListener, UpcomingBookingFragment.OnFragmentInteractionListener,
+        CompletedBookingFragment.OnFragmentInteractionListener {
 
     private static final String ARG_USER = "user";
     private ActivityMainBinding binding;

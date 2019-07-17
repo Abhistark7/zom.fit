@@ -7,7 +7,7 @@ import org.parceler.Parcel;
 @Parcel
 public class Timing {
 
-    @SerializedName("timingId")
+    @SerializedName("id")
     public String timingId;
 
     @SerializedName("time")

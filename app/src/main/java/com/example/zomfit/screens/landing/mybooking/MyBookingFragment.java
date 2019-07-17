@@ -4,13 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 
 import com.example.zomfit.R;
+import com.example.zomfit.databinding.FragmentMyBookingBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,31 +24,22 @@ import com.example.zomfit.R;
  * Use the {@link MyBookingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyBookingFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class MyBookingFragment extends Fragment implements UpcomingBookingFragment.OnFragmentInteractionListener,
+            CompletedBookingFragment.OnFragmentInteractionListener{
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+
+
+    private FragmentMyBookingBinding binding;
+    private FragmentAdapter adapter;
 
     public MyBookingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBookingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MyBookingFragment newInstance(String param1, String param2) {
         MyBookingFragment fragment = new MyBookingFragment();
         Bundle args = new Bundle();
@@ -66,11 +61,23 @@ public class MyBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_booking, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_booking, container,false);
+        initialize();
+        return binding.getRoot();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private void initialize() {
+        setupViewPager(binding.viewpager);
+        binding.tabs.setupWithViewPager(binding.viewpager);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        adapter = new FragmentAdapter(getChildFragmentManager());
+        adapter.addFragment(new UpcomingBookingFragment(), "Upcoming Booking");
+        adapter.addFragment(new CompletedBookingFragment(), "Completed Booking");
+        viewPager.setAdapter(adapter);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -94,18 +101,12 @@ public class MyBookingFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -30,4 +30,10 @@ public class BookActivityRequest {
 
     @SerializedName("activityIconUrl")
     public String activityIconUrl;
+
+    @SerializedName("activityId")
+    public String activityId;
+
+    @SerializedName("timingId")
+    public String timingId;
 }

@@ -1,4 +1,4 @@
-package com.example.zomfit.models;
+package com.example.zomfit.models.booking;
 
 import com.google.gson.annotations.SerializedName;
 

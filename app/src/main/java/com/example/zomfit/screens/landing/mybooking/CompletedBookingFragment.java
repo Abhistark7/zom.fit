@@ -1,57 +1,42 @@
 package com.example.zomfit.screens.landing.mybooking;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zomfit.R;
+import com.example.zomfit.databinding.FragmentCompletedBookingBinding;
+import com.example.zomfit.models.booking.MyBookingRequest;
+import com.example.zomfit.models.booking.MyBookingResponse;
+import com.example.zomfit.network.ApiService;
+import com.example.zomfit.utils.BasicUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CompletedBookingFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CompletedBookingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class CompletedBookingFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
-    public CompletedBookingFragment() {
-        // Required empty public constructor
-    }
+    private FragmentCompletedBookingBinding binding;
+    private BookingAdapter adapter;
+    private Retrofit retrofit;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CompletedBookingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CompletedBookingFragment newInstance(String param1, String param2) {
-        CompletedBookingFragment fragment = new CompletedBookingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public CompletedBookingFragment() {
     }
 
     @Override
@@ -66,11 +51,68 @@ public class CompletedBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_completed_booking, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_completed_booking, container, false);
+        initialize();
+        return binding.getRoot();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private void initialize() {
+        showLoadingView();
+        setUpRecyclerView();
+        getCompletedBookings();
+    }
+
+    private void setUpRecyclerView() {
+        adapter = new BookingAdapter(getActivity());
+        binding.completedRecycler.setNestedScrollingEnabled(false);
+        binding.completedRecycler.setAdapter(adapter);
+        binding.completedRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private void getCompletedBookings() {
+        retrofit = BasicUtils.connectApi();
+        MyBookingRequest bookingRequest = new MyBookingRequest();
+        bookingRequest.userId = getUserId();
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<MyBookingResponse> bookingResponseCall = apiService.getCompletedBooking(bookingRequest);
+        bookingResponseCall.enqueue(new Callback<MyBookingResponse>() {
+            @Override
+            public void onResponse(Call<MyBookingResponse> call, Response<MyBookingResponse> response) {
+                adapter.update(response.body().bookingList);
+                showContentView();
+            }
+
+            @Override
+            public void onFailure(Call<MyBookingResponse> call, Throwable t) {
+                showErrorView();
+            }
+        });
+    }
+
+    private String getUserId() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        return sharedPref.getString(getString(R.string.user_id_label), "");
+    }
+
+    private void showLoadingView() {
+        binding.contentView.setVisibility(View.GONE);
+        binding.errorView.setVisibility(View.GONE);
+        binding.loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorView() {
+        binding.contentView.setVisibility(View.GONE);
+        binding.errorView.setVisibility(View.VISIBLE);
+        binding.loadingView.setVisibility(View.GONE);
+    }
+
+    private void showContentView() {
+        binding.contentView.setVisibility(View.VISIBLE);
+        binding.errorView.setVisibility(View.GONE);
+        binding.loadingView.setVisibility(View.GONE);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -93,19 +135,11 @@ public class CompletedBookingFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public OnFragmentInteractionListener getmListener() {
+        return mListener;
     }
 }
