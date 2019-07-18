@@ -36,6 +36,7 @@ public class BookNow extends AppCompatActivity {
     private static final String ARG_CENTER_URL = "arg_center_url";
     private static final String ARG_ACTIVITY_URL = "arg_activity_url";
     private static final String ARG_ACTIVITY_ID = "arg_activity_id";
+    private static final String ARG_CENTER_ID = "arg_center_id";
     private static final String ARG_TIMING_ID = "arg_timing_id";
     private static final String MY_BOOKING_FRAGMENT = "my_booking_fragment";
     private static final String ARG_START_FRAGMENT = "arg_fragment";
@@ -47,6 +48,7 @@ public class BookNow extends AppCompatActivity {
     private String centerUrl;
     private String activityUrl;
     private String activityId;
+    private String centerId;
     private String timingId;
     private ActivityBookNowBinding binding;
     private Retrofit retrofit;
@@ -70,6 +72,7 @@ public class BookNow extends AppCompatActivity {
         activityUrl = intent.getExtras().getString(ARG_ACTIVITY_URL);
         activityId = intent.getExtras().getString(ARG_ACTIVITY_ID);
         timingId = intent.getExtras().getString(ARG_TIMING_ID);
+        centerId = intent.getExtras().getString(ARG_CENTER_ID);
     }
 
     private void initialize() {
@@ -110,6 +113,7 @@ public class BookNow extends AppCompatActivity {
         request.userId = getUserId();
         request.activityId = activityId;
         request.timingId = timingId;
+        request.centerId = centerId;
         Call<BaseResponse> responseCall = apiService.bookActivity(request);
         responseCall.enqueue(new Callback<BaseResponse>() {
             @Override

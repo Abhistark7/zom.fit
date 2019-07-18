@@ -29,4 +29,10 @@ public class Activity {
 
     @SerializedName("likedUserIds")
     public List<String> likedUserids;
+
+    @SerializedName("totalSlots")
+    public int totalSlots;
+
+    @SerializedName("bookedSlots")
+    public int bookedSlots;
 }

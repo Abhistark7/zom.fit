@@ -48,6 +48,7 @@ public class CenterActivity extends AppCompatActivity {
     private static final String ARG_CITY_NAME = "arg_city_name";
     private static final String ARG_ACTIVITY_ID = "arg_activity_id";
     private static final String ARG_TIMING_ID = "arg_timing_id";
+    private static final String ARG_CENTER_ID = "arg_center_id";
     private static final String RETROFIT = "retrofit";
     private static final String SUCCESS = "success";
     private static final String FAILURE = "failure";
@@ -143,6 +144,7 @@ public class CenterActivity extends AppCompatActivity {
         bundle.putString(ARG_CENTER_URL, center.imageUrl);
         bundle.putString(ARG_ACTIVITY_ID, activity.activityId);
         bundle.putString(ARG_TIMING_ID, timing.timingId);
+        bundle.putString(ARG_CENTER_ID, center.id);
         intent.putExtras(bundle);
         startActivity(intent);
     }

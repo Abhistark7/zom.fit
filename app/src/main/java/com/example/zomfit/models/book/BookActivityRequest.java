@@ -34,6 +34,9 @@ public class BookActivityRequest {
     @SerializedName("activityId")
     public String activityId;
 
+    @SerializedName("centerId")
+    public String centerId;
+
     @SerializedName("timingId")
     public String timingId;
 }
